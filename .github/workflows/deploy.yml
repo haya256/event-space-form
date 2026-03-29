@@ -1,0 +1,25 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: デモ用ファイルを作成
+        run: |
+          mkdir _site
+          sed 's|<h1 class="page-title">|<p style="background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:10px 16px;margin-bottom:16px;font-size:0.85rem;color:#856404;">※ これはデモページです。送信ボタンを押してもデータは保存されません。</p>\n  <h1 class="page-title">|' index.html > _site/index.html
+
+      - name: gh-pages ブランチに push
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _site
+          publish_branch: gh-pages
